@@ -52,7 +52,7 @@ int main(){
 	else
 		desativaMemLog();
 
-
+	// code to be done
 
 	return (optReg)? finalizaMemLog() : 0;
 }
