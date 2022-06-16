@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <cstring>
 #include <string>
 #include <getopt.h>
 #include "msgassert.hpp"
@@ -17,15 +18,18 @@ void parseArgs(int argc, char *argv[], char inputName[], char outputName[], char
 			case 'I':
 				strcpy(inputName, optarg);
 				break;
+
 			case 'o':
 			case 'O':
 				strcpy(outputName, optarg);
 				break;
+
 			case 'p':
-				strcpy(logname, optarg);
-				erroAssert(strlen(logname)>0, "Com a opção -p, o nome do arquivo de registro deve ser informado.");
+				strcpy(logName, optarg);
+				erroAssert(strlen(logName)>0, "Com a opção -p, o nome do arquivo de registro deve ser informado.");
 				optReg = true;
 				break;
+				
 			case 'l':
 				regMem = true;
 				break;
@@ -39,14 +43,14 @@ void parseArgs(int argc, char *argv[], char inputName[], char outputName[], char
 	erroAssert(strlen(outputName)>0, "Arquivo de saída não foi informado corretamente.");
 }
 
-int main(){
+int main(int argc, char *argv[]){
 	char logName[100], inputName[100], outputName[100];
 	bool optReg = false, regMem = false;
 
 	parseArgs(argc, argv, inputName, outputName, logName, regMem, optReg);
 
 	if(optReg)
-		iniciaMemlog(logname);
+		iniciaMemLog(logName);
 	if(regMem)
 		ativaMemLog();
 	else
