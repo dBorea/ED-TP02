@@ -3,6 +3,8 @@
 #include <cstring>
 #include <string>
 #include <getopt.h>
+#include "List.hpp"
+#include "RankedString.hpp"
 #include "msgassert.hpp"
 #include "memlog.hpp"
 
@@ -57,6 +59,7 @@ int main(int argc, char *argv[]){
 		desativaMemLog();
 
 	// code to be done
+	List<RankedString> listaDePalavras;
 
 	return (optReg)? finalizaMemLog() : 0;
 }
