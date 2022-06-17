@@ -1,28 +1,27 @@
 #ifndef LIST_NODE_H
 #define LIST_NODE_H
 
-template <typename T>
-class List;
+#include "RankedString.hpp"
 
-template <typename T>
 class ListNode{
 	private:
-		T data;
+		RankedString data;
 		ListNode *nextPtr;
 	public:
-		ListNode(T);
-		T getData();
-	friend class List<T>;
+		ListNode(RankedString);
+		RankedString getData();
+		void incrementaData(){
+			data.increment();
+		}
+	friend class List;
 };
 
-template <typename T>
-ListNode<T>::ListNode(T inputData){
+ListNode::ListNode(RankedString inputData){
 	data = inputData;
 	nextPtr = nullptr;
 }
 
-template <typename T>
-T ListNode<T>::getData(){
+RankedString ListNode::getData(){
 	return data;
 }
 

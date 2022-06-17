@@ -1,7 +1,5 @@
-#include <iostream>
 #include <fstream>
 #include <cstring>
-#include <string>
 #include <getopt.h>
 #include "List.hpp"
 #include "RankedString.hpp"
@@ -45,11 +43,74 @@ void parseArgs(int argc, char *argv[], char inputName[], char outputName[], char
 	erroAssert(strlen(outputName)>0, "Arquivo de saída não foi informado corretamente.");
 }
 
+void processaOrdem(std::ifstream& inputFile, std::string& inputOrder){
+	std::string tempString;
+	for(int i=0; inputFile >> tempString; i++){
+		if(tempString == "#TEXTO") return;
+		inputOrder.append(tempString);
+	}
+}
+
+void processaTexto(std::ifstream& inputFile, List& listaDePalavras, bool afterOrder=0, CustomAlphaCmp* ordemCustomizada = nullptr){
+	std::string tempString;
+	for(int i=0; inputFile >> tempString; i++){
+		if(tempString == "#ORDEM") return;
+		
+		for(int j=tempString.size()-1; j>=0; j--){
+			if(tempString[j] <= 'Z' && tempString[j] >= 'A'){
+				tempString[j] += 32;
+			}
+			if(ispunct(tempString[j]) && tempString[j] != '-')
+				tempString.erase(j, 1);
+		}
+
+		ListNode* nodo = listaDePalavras.search(tempString);
+		if(nodo!=nullptr) nodo->incrementaData();
+		else{
+			if(afterOrder)
+				listaDePalavras.insertNewNode(RankedString(tempString, ordemCustomizada));
+			else
+				listaDePalavras.insertNewNode(RankedString(tempString));
+		}
+	}
+}
+
+void parseInput(std::ifstream& inputFile, std::ofstream& outputFile){
+
+	List listaDePalavras;
+	CustomAlphaCmp* ordemCustomizada; // LEMBRAR DE DE-ALOCAR
+
+	std::string tempString;
+	std::string inputOrder("");
+
+	inputFile >> tempString;
+	erroAssert(tempString == "#ORDEM" || tempString == "#TEXTO", "Erro de index: #TEXTO ou #ORDEM não encontrados no início da entrada");
+
+	if(tempString == "#ORDEM") { 
+		processaOrdem(inputFile, inputOrder);
+		ordemCustomizada = new CustomAlphaCmp(inputOrder);
+		processaTexto(inputFile, listaDePalavras, 1, ordemCustomizada);
+	}
+	else { 
+		processaTexto(inputFile, listaDePalavras);
+		processaOrdem(inputFile, inputOrder);
+		ordemCustomizada = new CustomAlphaCmp(inputOrder);
+		listaDePalavras.updateOrder(ordemCustomizada);
+		listaDePalavras.sortList();
+	}
+
+	listaDePalavras.printToOutput(outputFile);
+}
+
 int main(int argc, char *argv[]){
 	char logName[100], inputName[100], outputName[100];
 	bool optReg = false, regMem = false;
 
 	parseArgs(argc, argv, inputName, outputName, logName, regMem, optReg);
+
+	std::string arqEntrada(inputName), arqSaida(outputName);
+	std::ifstream inputFile(arqEntrada); erroAssert(!inputFile.fail(), "Arquivo de entrada não pôde ser aberto");
+	std::ofstream outputFile(arqSaida);
 
 	if(optReg)
 		iniciaMemLog(logName);
@@ -58,8 +119,7 @@ int main(int argc, char *argv[]){
 	else
 		desativaMemLog();
 
-	// code to be done
-	List<RankedString> listaDePalavras;
+	parseInput(inputFile, outputFile);
 
 	return (optReg)? finalizaMemLog() : 0;
 }
