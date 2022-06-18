@@ -9,10 +9,6 @@ class List{
 		ListNode *endPtr;
 		bool isEmpty();
 
-		ListNode* SortedMerge(ListNode*, ListNode*);
-		void FrontBackSplit(ListNode* , ListNode** , ListNode**);
-		void MergeSort(ListNode**);
-
 		ListNode* getUltimo(ListNode*);
 		ListNode* particao(ListNode*, ListNode*, ListNode**, ListNode**);
 		ListNode* QSrecursive(ListNode*, ListNode*);
