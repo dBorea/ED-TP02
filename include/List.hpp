@@ -13,6 +13,10 @@ class List{
 		void FrontBackSplit(ListNode* , ListNode** , ListNode**);
 		void MergeSort(ListNode**);
 
+		ListNode* getUltimo(ListNode*);
+		ListNode* particao(ListNode*, ListNode*, ListNode**, ListNode**);
+		ListNode* QSrecursive(ListNode*, ListNode*);
+
 	public:
 		List();
 		~List();
@@ -112,7 +116,7 @@ void List::printToOutput(std::ostream& output){
 			output << currentPtr->data << std::endl;
 			currentPtr = currentPtr->nextPtr;
 		}
-		output << "#FIM";
+		output << "#FIM" << std::endl;
 	}
 }
 
@@ -143,72 +147,67 @@ void List::updateOrder(CustomAlphaCmp* orderPtr){
 }
 
 void List::sortList(){
-	MergeSort(&startPtr);
+	
 }
 
-
-void List::MergeSort(ListNode** headRef){
-    ListNode* head = *headRef;
-    ListNode* a;
-    ListNode* b;
- 
-    /* Base case -- length 0 or 1 */
-    if ((head == nullptr) || (head->nextPtr == nullptr)) {
-        return;
-    }
- 
-    /* Split head into 'a' and 'b' sublists */
-    FrontBackSplit(head, &a, &b);
- 
-    /* Recursively sort the sublists */
-    MergeSort(&a);
-    MergeSort(&b);
- 
-    /* answer = merge the two sorted lists together */
-    *headRef = SortedMerge(a, b);
-}
- 
-ListNode* List::SortedMerge(ListNode* a, ListNode* b){
-    ListNode* result = nullptr;
- 
-    /* Base cases */
-    if (a == nullptr)
-        return (b);
-    else if (b == nullptr)
-        return (a);
- 
-    /* Pick either a or b, and recur */
-    if (a->data <= b->data) {
-        result = a;
-        result->nextPtr = SortedMerge(a->nextPtr, b);
-    }
-    else {
-        result = b;
-        result->nextPtr = SortedMerge(a, b->nextPtr);
-    }
-    return (result);
+ListNode* List::getUltimo(ListNode* atual){
+	for(; atual != nullptr  && atual->nextPtr != nullptr ;)
+		atual = atual->nextPtr;
+	return atual;
 }
 
-void List::FrontBackSplit(ListNode* source, ListNode** frontRef, ListNode** backRef){
-    ListNode* fast;
-    ListNode* slow;
-    slow = source;
-    fast = source->nextPtr;
- 
-    /* Advance 'fast' two nodes, and advance 'slow' one node */
-    while (fast != nullptr) {
-        fast = fast->nextPtr;
-        if (fast != NULL) {
-            slow = slow->nextPtr;
-            fast = fast->nextPtr;
-        }
-    }
- 
-    /* 'slow' is before the midpoint in the list, so split it in two
-    at that point. */
-    *frontRef = source;
-    *backRef = slow->nextPtr;
-    slow->nextPtr = NULL;
+ListNode* List::particao(ListNode* head, ListNode* end, ListNode** newHead, ListNode** newEnd){
+	ListNode* pivo = end;
+	ListNode* anterior = nullptr, *atual = head, *cauda = pivo;
+
+	for(;atual != pivo;){
+		if(atual->data < pivo->data){
+			if((*newHead) == nullptr) (*newHead) = atual;
+
+			anterior = atual;
+			atual = atual->nextPtr;
+		} 
+		else {
+			if(anterior) anterior->nextPtr = atual->nextPtr;
+			ListNode* tmp = atual->nextPtr;
+			atual->nextPtr = nullptr;
+			cauda->nextPtr = atual;
+			cauda = atual;
+			atual = tmp;
+		}
+	}
+
+	if((*newHead) == nullptr)
+		*newHead = pivo;
+
+	(*newEnd) = cauda;
+
+	return pivo;
+}
+
+ListNode* List::QSrecursive(ListNode* head, ListNode* end){
+	if(!head || head == end)
+		return head;
+
+	ListNode* newHead = nullptr, *newEnd = nullptr;
+
+	ListNode* pivo = particao(head, end, &newHead, &newEnd);
+
+	if(newHead != pivo){
+		ListNode* tmp = newHead;
+		for(; tmp->nextPtr != pivo ;)
+			tmp = tmp->nextPtr;
+		tmp->nextPtr = nullptr;
+
+		newHead = QSrecursive(newHead, tmp);
+
+		tmp = getUltimo(newHead);
+		tmp->nextPtr = pivo;
+	}
+
+	pivo->nextPtr = QSrecursive(pivo->nextPtr, newEnd);
+
+	return newHead;
 }
 
 #endif
