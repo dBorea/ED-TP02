@@ -7,15 +7,20 @@ class List{
 	private:
 		ListNode *startPtr;
 		ListNode *endPtr;
+		int listSize;
+
 		bool isEmpty();
 
 		ListNode* getUltimo(ListNode*);
 		ListNode* particao(ListNode*, ListNode*, ListNode**, ListNode**);
 		ListNode* QSrecursive(ListNode*, ListNode*);
 
+		ListNode* quickSortHibrido(ListNode*, ListNode*);
+
 	public:
 		List();
 		~List();
+		int getSize();
 		void insertBegin(RankedString);
 		void insertEnd(RankedString);
 		void insertNewNode(RankedString);
@@ -28,6 +33,7 @@ class List{
 List::List(){
 	startPtr = nullptr;
 	endPtr = nullptr;
+	listSize = 0;
 }
 
 List::~List(){
@@ -41,6 +47,10 @@ List::~List(){
          delete tempPtr;
       }
    }
+}
+
+int List::getSize(){
+	return listSize;
 }
 
 bool List::isEmpty(){
@@ -60,6 +70,7 @@ void List::insertBegin(RankedString dataIn){
 		newPtr->nextPtr = startPtr; //the next pointer of the new node points to the node that was previously first
 		startPtr = newPtr; //the pointer for the new node is now the starting node
 	}
+	listSize++;
 }
 
 void List::insertEnd(RankedString dataIn){
@@ -72,6 +83,7 @@ void List::insertEnd(RankedString dataIn){
 		endPtr->nextPtr = newPtr; //the current last node's next pointer points to the new node
 		endPtr = newPtr; //the new node is now the last node in the list
 	}
+	listSize++;
 }
 
 void List::insertNewNode(RankedString dataIn){
@@ -92,13 +104,13 @@ void List::insertNewNode(RankedString dataIn){
 				currentPtr->data.increment();
 			}
 			if((newPtr->data < currentPtr->nextPtr->data) && (newPtr->data > currentPtr->data)){
-				ListNode *next = currentPtr->nextPtr;
+				newPtr->nextPtr = currentPtr->nextPtr;
 				currentPtr->nextPtr = newPtr;
-				newPtr->nextPtr = next;
 				break;
 			}
 			currentPtr = currentPtr->nextPtr;
 		}
+		listSize++;
 	}
 
 }
@@ -143,7 +155,8 @@ void List::updateOrder(CustomAlphaCmp* orderPtr){
 }
 
 void List::sortList(){
-	
+	startPtr = quickSortHibrido(startPtr, endPtr);
+	endPtr = getUltimo(startPtr);
 }
 
 ListNode* List::getUltimo(ListNode* atual){
@@ -204,6 +217,39 @@ ListNode* List::QSrecursive(ListNode* head, ListNode* end){
 	pivo->nextPtr = QSrecursive(pivo->nextPtr, newEnd);
 
 	return newHead;
+}
+
+int insertionThreshold = 10;
+
+ListNode* List::quickSortHibrido(ListNode* head, ListNode* end){
+	if(!head || head == end)
+		return head;
+	
+	if(nodeDistance(head, end) + 1 < insertionThreshold){
+		insertionSort(&head, end);
+		return head;
+	}
+	else {
+		ListNode* newHead = nullptr, *newEnd = nullptr;
+		ListNode* pivo = particao(head, end, &newHead, &newEnd);
+
+		if(newHead != pivo){
+			ListNode* tmp = newHead;
+			for(; tmp->nextPtr != pivo ;)
+				tmp = tmp->nextPtr;
+			tmp->nextPtr = nullptr;
+
+			newHead = QSrecursive(newHead, tmp);
+
+			tmp = getUltimo(newHead);
+			tmp->nextPtr = pivo;
+		}
+
+		pivo->nextPtr = QSrecursive(pivo->nextPtr, newEnd);
+
+		return newHead;
+	}
+	
 }
 
 #endif

@@ -78,7 +78,7 @@ void processaTexto(std::ifstream& inputFile, List& listaDePalavras, bool afterOr
 void parseInput(std::ifstream& inputFile, std::ofstream& outputFile){
 
 	List listaDePalavras;
-	CustomAlphaCmp* ordemCustomizada; // LEMBRAR DE DE-ALOCAR
+	CustomAlphaCmp* ordemCustomizada;
 
 	std::string tempString;
 	std::string inputOrder("");

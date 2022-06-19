@@ -7,16 +7,13 @@
 
 class CustomAlphaCmp{
 	private:
-		int table[1 << CHAR_BIT];
+		int table[1 << (CHAR_BIT - 1)];
 	public:
 		CustomAlphaCmp(const std::string& alpha){
-			for(int i=0; i<(1 << CHAR_BIT); i++){ table[i] = INT_MAX; }
+			for(int i=0; i<(1 << (CHAR_BIT - 1)); i++){ table[i] = i; }
 
-			int value = 0;
-				table['-'] = ++value;
-			for(int i='0'; i<='9'; i++){
-				table[ i ] = ++value;
-			}
+			int value = 'a';
+
 			for (auto x : alpha){
 				table[ static_cast<unsigned char>(x) ] = ++value;
 
