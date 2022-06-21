@@ -50,7 +50,7 @@ void insertionSort(ListNode **head, ListNode *end){
 	ListNode *sorted = nullptr;
 	ListNode *current = *head;
 
-	for (; current != end && current != nullptr ;){
+	for (; end->nextPtr != current && current != nullptr ;){
 		ListNode *next = current->nextPtr;
 
 		sortedInsert(current, &sorted);

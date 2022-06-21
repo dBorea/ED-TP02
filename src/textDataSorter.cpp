@@ -6,13 +6,13 @@
 #include "msgassert.hpp"
 #include "memlog.hpp"
 
-void parseArgs(int argc, char *argv[], char inputName[], char outputName[], char logName[], bool &regMem, bool &optReg){
+void parseArgs(int argc, char *argv[], char inputName[], char outputName[], char logName[], bool &regMem, bool &optReg, int &insertionThresholdArg, int &pivotArg){
 	extern char *optarg;
 	logName[0] = 0;
 	inputName[0] = 0;
 	outputName[0] = 0;
 
-	for(int opt; (opt=getopt(argc, argv, "i:I:o:O:p:l")) != EOF;){
+	for(int opt; (opt=getopt(argc, argv, "i:I:o:O:m:M:s:S:p:l")) != EOF;){
 		switch(opt){
 			case 'i':
 			case 'I':
@@ -22,6 +22,16 @@ void parseArgs(int argc, char *argv[], char inputName[], char outputName[], char
 			case 'o':
 			case 'O':
 				strcpy(outputName, optarg);
+				break;
+			
+			case 'm':
+			case 'M':
+				pivotArg = atoi(optarg);
+				break;
+			
+			case 's':
+			case 'S':
+				insertionThresholdArg = atoi(optarg);
 				break;
 
 			case 'p':
@@ -75,9 +85,8 @@ void processaTexto(std::ifstream& inputFile, List& listaDePalavras, bool afterOr
 	}
 }
 
-void parseInput(std::ifstream& inputFile, std::ofstream& outputFile){
+void parseInput(std::ifstream& inputFile, std::ofstream& outputFile, List listaDePalavras){
 
-	List listaDePalavras;
 	CustomAlphaCmp* ordemCustomizada;
 
 	std::string tempString;
@@ -105,12 +114,15 @@ void parseInput(std::ifstream& inputFile, std::ofstream& outputFile){
 int main(int argc, char *argv[]){
 	char logName[100], inputName[100], outputName[100];
 	bool optReg = false, regMem = false;
+	int pivotArg = 0, insertThresholdArg = INSERTION_THRESHOLD;
 
-	parseArgs(argc, argv, inputName, outputName, logName, regMem, optReg);
-
+	parseArgs(argc, argv, inputName, outputName, logName, regMem, optReg, insertThresholdArg, pivotArg);
 	std::string arqEntrada(inputName), arqSaida(outputName);
 	std::ifstream inputFile(arqEntrada); erroAssert(!inputFile.fail(), "Arquivo de entrada não pôde ser aberto");
 	std::ofstream outputFile(arqSaida);
+
+	List listaDePalavras;
+	listaDePalavras.setInsertionTreshold(insertThresholdArg);
 
 	if(optReg)
 		iniciaMemLog(logName);
@@ -119,7 +131,7 @@ int main(int argc, char *argv[]){
 	else
 		desativaMemLog();
 
-	parseInput(inputFile, outputFile);
+	parseInput(inputFile, outputFile, listaDePalavras);
 
 	return (optReg)? finalizaMemLog() : 0;
 }

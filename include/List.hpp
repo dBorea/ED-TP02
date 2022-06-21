@@ -3,11 +3,15 @@
 
 #include "ListNode.hpp"
 
+#define INSERTION_THRESHOLD 10
+
 class List{
 	private:
 		ListNode *startPtr;
 		ListNode *endPtr;
 		int listSize;
+		int insertionThreshold;
+		int pivotArg;
 
 		bool isEmpty();
 
@@ -21,6 +25,8 @@ class List{
 		List();
 		~List();
 		int getSize();
+		void setInsertionTreshold(int);
+		void setPivotArg(int);
 		void insertBegin(RankedString);
 		void insertEnd(RankedString);
 		void insertNewNode(RankedString);
@@ -34,6 +40,8 @@ List::List(){
 	startPtr = nullptr;
 	endPtr = nullptr;
 	listSize = 0;
+	insertionThreshold = 0;
+	pivotArg = 0;
 }
 
 List::~List(){
@@ -51,6 +59,14 @@ List::~List(){
 
 int List::getSize(){
 	return listSize;
+}
+
+void List::setInsertionTreshold(int threshold){
+	insertionThreshold = threshold;
+}
+
+void List::setPivotArg(int pivot){
+	pivotArg = pivot;
 }
 
 bool List::isEmpty(){
@@ -166,7 +182,14 @@ ListNode* List::getUltimo(ListNode* atual){
 }
 
 ListNode* List::particao(ListNode* head, ListNode* end, ListNode** newHead, ListNode** newEnd){
-	ListNode* pivo = end;
+	ListNode* pivo;
+	if(pivotArg > 0){
+		pivo = head;
+		for(int i=0; i<pivotArg/2 && pivo->nextPtr != nullptr; i++){
+			pivo = pivo->nextPtr;
+		}
+	}
+	else { pivo = end; }
 	ListNode* anterior = nullptr, *atual = head, *cauda = pivo;
 
 	for(;atual != pivo;){
@@ -218,8 +241,6 @@ ListNode* List::QSrecursive(ListNode* head, ListNode* end){
 
 	return newHead;
 }
-
-int insertionThreshold = 10;
 
 ListNode* List::quickSortHibrido(ListNode* head, ListNode* end){
 	if(!head || head == end)
