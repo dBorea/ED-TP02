@@ -3,7 +3,7 @@
 
 #include "ListNode.hpp"
 
-#define INSERTION_THRESHOLD 10
+#define INSERTION_THRESHOLD 5
 
 class List{
 	private:
@@ -183,14 +183,21 @@ ListNode* List::getUltimo(ListNode* atual){
 
 ListNode* List::particao(ListNode* head, ListNode* end, ListNode** newHead, ListNode** newEnd){
 	ListNode* pivo;
+	ListNode* anterior = nullptr, *atual = head;
+
 	if(pivotArg > 0){
 		pivo = head;
+		for(int i=0; i<pivotArg && pivo->nextPtr != nullptr; i++){
+			pivo = pivo->nextPtr;
+		}
+		atual = quickSortHibrido(head, pivo);
+		pivo = atual;
 		for(int i=0; i<pivotArg/2 && pivo->nextPtr != nullptr; i++){
 			pivo = pivo->nextPtr;
 		}
 	}
 	else { pivo = end; }
-	ListNode* anterior = nullptr, *atual = head, *cauda = pivo;
+	ListNode* cauda = pivo;
 
 	for(;atual != pivo;){
 		if(atual->data < pivo->data){
@@ -260,13 +267,13 @@ ListNode* List::quickSortHibrido(ListNode* head, ListNode* end){
 				tmp = tmp->nextPtr;
 			tmp->nextPtr = nullptr;
 
-			newHead = QSrecursive(newHead, tmp);
+			newHead = quickSortHibrido(newHead, tmp);
 
 			tmp = getUltimo(newHead);
 			tmp->nextPtr = pivo;
 		}
 
-		pivo->nextPtr = QSrecursive(pivo->nextPtr, newEnd);
+		pivo->nextPtr = quickSortHibrido(pivo->nextPtr, newEnd);
 
 		return newHead;
 	}
