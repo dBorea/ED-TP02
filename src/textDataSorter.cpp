@@ -116,6 +116,8 @@ void parseInput(std::ifstream& inputFile, std::ofstream& outputFile, List listaD
 	}
 
 	listaDePalavras.printToOutput(outputFile);
+
+	delete ordemCustomizada;
 }
 
 int main(int argc, char *argv[]){
