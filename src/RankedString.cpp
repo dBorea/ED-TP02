@@ -7,7 +7,7 @@ CustomAlphaCmp::CustomAlphaCmp(const std::string& alpha){
 	int value = 'a';
 
 	for (auto x : alpha){
-		table[ static_cast<unsigned char>(x) ] = ++value;
+		table[ static_cast<unsigned char>(x) ] = value++;
 
 		if(x >= 'a' && x <= 'z')
 			table[ static_cast<unsigned char>(x) - 32 ] = value;
