@@ -79,6 +79,8 @@ void processaTexto(std::ifstream& inputFile, List& listaDePalavras, int nPalavra
 				tempString.erase(j, 1);
 		}
 
+		if(tempString[tempString.size()-1] == '-') tempString.erase(tempString.size()-1, 1);
+
 		ListNode* nodo = listaDePalavras.search(tempString);
 		if(nodo!=nullptr) nodo->incrementaData();
 		else{
