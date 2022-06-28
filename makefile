@@ -10,7 +10,7 @@ REGPERF = $(TEMP)/regperf
 OBJS = $(OBJ)/textDataSorter.o $(OBJ)/memlog.o $(OBJ)/List.o $(OBJ)/ListNode.o $(OBJ)/RankedString.o
 HDRS = $(INC)/msgassert.hpp $(INC)/memlog.hpp $(INC)/RankedString.hpp $(INC)/ListNode.hpp $(INC)/List.hpp
 
-SANITIZE = #-fsanitize=undefined,address -static-libasan
+SANITIZE = -fsanitize=undefined,address -static-libasan
 CXXFLAGS = -Wall -c -I$(INC) $(SANITIZE) -g 
 LDFLAGS = $(SANITIZE) -g
 
