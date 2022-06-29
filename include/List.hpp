@@ -24,7 +24,7 @@ class List{
 		List();
 		~List();
 		int getSize();
-		void setInsertionTreshold(int);
+		void setInsertionThreshold(int);
 		void setPivotArg(int);
 		void insertBegin(RankedString);
 		void insertEnd(RankedString);

@@ -4,15 +4,26 @@
 CustomAlphaCmp::CustomAlphaCmp(const std::string& alpha){
 	for(int i=0; i<(1 << (CHAR_BIT - 1)); i++){ table[i] = i; }
 
+	bool inputChars[26];
+
 	int value = 'a';
 
 	for (auto x : alpha){
 		table[ static_cast<unsigned char>(x) ] = value++;
 
-		if(x >= 'a' && x <= 'z')
+		if(x >= 'a' && x <= 'z'){
+			inputChars[ static_cast<unsigned char>(x) - 97 ] = 1;
 			table[ static_cast<unsigned char>(x) - 32 ] = value;
-		else if(x >= 'A' && x <= 'Z')
+		}
+		else if(x >= 'A' && x <= 'Z'){
+			inputChars[ static_cast<unsigned char>(x) - 65 ] = 1;
 			table[ static_cast<unsigned char>(x) + 32 ] = value;
+		}
+	}
+
+	for(int i=0; i<26; i++){
+		if(!inputChars[i])
+			table[i] = value++;
 	}
 }
 

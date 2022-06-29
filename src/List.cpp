@@ -25,7 +25,7 @@ int List::getSize(){
 	return listSize;
 }
 
-void List::setInsertionTreshold(int threshold){
+void List::setInsertionThreshold(int threshold){
 	insertionThreshold = threshold;
 }
 
@@ -108,7 +108,6 @@ void List::printToOutput(std::ostream& output){
 		ListNode *currentPtr = startPtr;
 		for(; currentPtr != nullptr ;){
 			output << currentPtr->getData() << std::endl;
-			leMemLog((long int)(&(currentPtr->nextPtr)), sizeof(ListNode*), 1);
 			currentPtr = currentPtr->nextPtr;
 		}
 		output << "#FIM" << std::endl;
@@ -125,7 +124,6 @@ ListNode* List::search(std::string key){
 		if(nodePtr->getData().getPalavra() == key)
 			found = true;
 		else{
-			leMemLog((long int)(&(nodePtr->nextPtr)), sizeof(ListNode*), 1);
 			nodePtr = nodePtr->nextPtr;
 		}
 	}

@@ -16,11 +16,13 @@ void parseArgs(int argc, char *argv[], char inputName[], char outputName[], char
 			case 'i':
 			case 'I':
 				strcpy(inputName, optarg);
+				erroAssert(strlen(inputName)>0, "Arquivo de entrada não foi informado corretamente.");
 				break;
 
 			case 'o':
 			case 'O':
 				strcpy(outputName, optarg);
+				erroAssert(strlen(outputName)>0, "Arquivo de saída não foi informado corretamente.");
 				break;
 			
 			case 'm':
@@ -52,8 +54,10 @@ void parseArgs(int argc, char *argv[], char inputName[], char outputName[], char
 	if(regMem)
 		regMem = optReg;
 
-	erroAssert(strlen(inputName)>0, "Arquivo de entrada não foi informado corretamente.");
-	erroAssert(strlen(outputName)>0, "Arquivo de saída não foi informado corretamente.");
+	erroAssert(strlen(inputName)>0, "Arquivo de entrada não foi informado.");
+	erroAssert(strlen(outputName)>0, "Arquivo de saída não foi informado.");
+	erroAssert(pivotArg>=0, "O argumento de -M não pode ser menor que zero.");
+	erroAssert(insertionThresholdArg>=0, "O argumento de -S não pode ser menor que zero.");
 }
 
 void processaOrdem(std::ifstream& inputFile, std::string& inputOrder){
@@ -87,7 +91,7 @@ void processaTexto(std::ifstream& inputFile, List& listaDePalavras, int nPalavra
 			if(afterOrder)
 				listaDePalavras.insertNewNode(RankedString(tempString, ordemCustomizada));
 			else
-				listaDePalavras.insertNewNode(RankedString(tempString));
+				listaDePalavras.insertEnd(RankedString(tempString));
 		}
 	}
 }
@@ -104,12 +108,14 @@ void parseInput(std::ifstream& inputFile, std::ofstream& outputFile, List listaD
 
 	if(tempString == "#ORDEM") { 
 		processaOrdem(inputFile, inputOrder);
+		defineFaseMemLog(1);
 		ordemCustomizada = new CustomAlphaCmp(inputOrder);
 		processaTexto(inputFile, listaDePalavras, nPalavras, 1, ordemCustomizada);
 	}
 	else { 
 		processaTexto(inputFile, listaDePalavras, nPalavras);
 		processaOrdem(inputFile, inputOrder);
+		defineFaseMemLog(1);
 		ordemCustomizada = new CustomAlphaCmp(inputOrder);
 		listaDePalavras.updateOrder(ordemCustomizada);
 		listaDePalavras.sortList();
@@ -131,7 +137,7 @@ int main(int argc, char *argv[]){
 	std::ofstream outputFile(arqSaida);
 
 	List listaDePalavras;
-	listaDePalavras.setInsertionTreshold(insertThresholdArg);
+	listaDePalavras.setInsertionThreshold(insertThresholdArg);
 
 	if(optReg)
 		iniciaMemLog(logName);
