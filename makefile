@@ -114,7 +114,7 @@ mem: $(EXE)
 	rm -f $(REGMEM)/dataSorter.out 
 	$(EXE) -p $(REGMEM)/dataSorter.out -l -i $(TEMP)/entrada.txt -o $(TEMP)/saida.txt
 	$(ANALISAMEM) -i $(REGMEM)/dataSorter.out -p $(REGMEM)/textDataSorter-neutral
-	$(EXE) -p $(REGMEM)/dataSorter.out -l -i $(TEMP)/entrada.txt -o $(TEMP)/saida.txt -s 200
+	$(EXE) -p $(REGMEM)/dataSorter.out -l -i $(TEMP)/entrada.txt -o $(TEMP)/saida.txt -s 200 -m 
 	$(ANALISAMEM) -i $(REGMEM)/dataSorter.out -p $(REGMEM)/textDataSorter-insertionOnly
 	$(EXE) -p $(REGMEM)/dataSorter.out -l -i $(TEMP)/entrada.txt -o $(TEMP)/saida.txt -s 0
 	$(ANALISAMEM) -i $(REGMEM)/dataSorter.out -p $(REGMEM)/textDataSorter-QuicksortOnly

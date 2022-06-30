@@ -1,29 +1,54 @@
 #include "RankedString.hpp"
+#include "msgassert.hpp"
+#include <cstring>
+
+const char* msgDeErro(std::string first, std::string second, std::string chars){
+	first.append(chars);
+	first.append(second);
+	return first.c_str();
+}
 
 // Custom Compare Class constructor
 CustomAlphaCmp::CustomAlphaCmp(const std::string& alpha){
 	for(int i=0; i<(1 << (CHAR_BIT - 1)); i++){ table[i] = i; }
 
-	bool inputChars[26];
+	bool inputChars[26] = {0};
 
-	int value = 'a';
+	char value = 'a';
+
+	std::string repeatedChars("");
 
 	for (auto x : alpha){
-		table[ static_cast<unsigned char>(x) ] = value++;
-
 		if(x >= 'a' && x <= 'z'){
+			if(inputChars[ static_cast<unsigned char>(x) - 97 ]){
+				repeatedChars.append(std::string(1, x));
+				repeatedChars.append(" ");
+				continue;
+			}
 			inputChars[ static_cast<unsigned char>(x) - 97 ] = 1;
 			table[ static_cast<unsigned char>(x) - 32 ] = value;
 		}
 		else if(x >= 'A' && x <= 'Z'){
+			if(inputChars[ static_cast<unsigned char>(x) - 65 ]){ 
+				repeatedChars.append(std::string(1, x));
+				repeatedChars.append(" ");
+				continue;
+			}
 			inputChars[ static_cast<unsigned char>(x) - 65 ] = 1;
 			table[ static_cast<unsigned char>(x) + 32 ] = value;
 		}
+		table[ static_cast<unsigned char>(x) ] = value;
+
+		value++;
 	}
+	if(repeatedChars.size()>0) repeatedChars.erase(repeatedChars.size()-1, 1);
+	avisoAssert(repeatedChars.size()<=0,msgDeErro("Caracteres \'","\' repetidos na #ORDEM informada. Primeira menção dos caracteres utilizada.", repeatedChars));
 
 	for(int i=0; i<26; i++){
-		if(!inputChars[i])
-			table[i] = value++;
+		if(!inputChars[i]){
+			table[i+97] = value;
+			table[i+65] = value++;
+		}
 	}
 }
 

@@ -1,8 +1,8 @@
 #include <fstream>
-#include <cstring>
 #include <getopt.h>
-#include "List.hpp"
+#include <cstring>
 #include "msgassert.hpp"
+#include "List.hpp"
 #include "memlog.hpp"
 
 void parseArgs(int argc, char *argv[], char inputName[], char outputName[], char logName[], bool &regMem, bool &optReg, int &insertionThresholdArg, int &pivotArg, int &nPalavras){
@@ -105,14 +105,14 @@ void parseInput(std::ifstream& inputFile, std::ofstream& outputFile, List listaD
 
 	inputFile >> tempString;
 	erroAssert(tempString == "#ORDEM" || tempString == "#TEXTO", "Erro de index: #TEXTO ou #ORDEM não encontrados no início da entrada");
+	defineFaseMemLog(0);
 
 	if(tempString == "#ORDEM") { 
 		processaOrdem(inputFile, inputOrder);
-		defineFaseMemLog(1);
 		ordemCustomizada = new CustomAlphaCmp(inputOrder);
 		processaTexto(inputFile, listaDePalavras, nPalavras, 1, ordemCustomizada);
 	}
-	else { 
+	else {
 		processaTexto(inputFile, listaDePalavras, nPalavras);
 		processaOrdem(inputFile, inputOrder);
 		defineFaseMemLog(1);
