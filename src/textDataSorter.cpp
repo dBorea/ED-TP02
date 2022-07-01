@@ -129,7 +129,7 @@ void parseInput(std::ifstream& inputFile, std::ofstream& outputFile, List listaD
 int main(int argc, char *argv[]){
 	char logName[100], inputName[100], outputName[100];
 	bool optReg = false, regMem = false;
-	int pivotArg = 0, insertThresholdArg = INSERTION_THRESHOLD, nPalavras = 50000;
+	int pivotArg = 0, insertThresholdArg = INSERTION_THRESHOLD, nPalavras = INT_MAX;
 
 	parseArgs(argc, argv, inputName, outputName, logName, regMem, optReg, insertThresholdArg, pivotArg, nPalavras);
 	std::string arqEntrada(inputName), arqSaida(outputName);
