@@ -11,7 +11,7 @@ void parseArgs(int argc, char *argv[], char inputName[], char outputName[], char
 	inputName[0] = 0;
 	outputName[0] = 0;
 
-	for(int opt; (opt=getopt(argc, argv, "i:I:o:O:m:M:s:S:p:ln:")) != EOF;){
+	for(int opt; (opt=getopt(argc, argv, "i:I:o:O:m:M:s:S:p:ln:N:")) != EOF;){
 		switch(opt){
 			case 'i':
 			case 'I':
@@ -46,6 +46,7 @@ void parseArgs(int argc, char *argv[], char inputName[], char outputName[], char
 				break;
 			
 			case 'n':
+			case 'N':
 				nPalavras = atoi(optarg);
 				break;
 		}
